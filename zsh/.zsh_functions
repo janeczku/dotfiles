@@ -1,0 +1,167 @@
+#-------------------------------------------
+# Docker & Co.
+#-------------------------------------------
+
+#-------------------------------------------
+# Various
+#-------------------------------------------
+
+certinfo() {
+  openssl x509 -in $1 -noout -text
+}
+
+check-cert() {
+  if [ -z "$1" ]
+  then
+    echo "Usage: check-cert hostname [address [port]]" >&2
+    echo "" >&2
+    return
+  fi
+
+  hostname=$1
+  address=${2:-$hostname}
+  port=${3:-443}
+
+  echo "Checking certificate chain for $1"
+  echo "Q" | openssl s_client -showcerts -servername $hostname -connect ${address}:${port}
+  echo ""
+  echo "Parsing certificate:"
+  echo ""
+  echo "$(echo "Q" | openssl s_client -servername $hostname -connect ${address}:${port} 2>&1 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | openssl x509 -noout -text | grep -A 4 "Issuer:")"
+}
+
+sum() {
+  [ "${1#-F}" != "$1" ] && SP=${1} && shift
+  [ "$#" -eq 0 ] && set -- 0
+  key="$(_awk_col "$1")"
+  awk $SP "{ x+=$key } END { printf(\"%d\n\", x) }"
+}
+
+authme() {
+  ssh "$1" 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys' < ~/.ssh/id_rsa.pub
+}
+
+#-------------------------------------------
+# Network
+#-------------------------------------------
+
+jsoncurl() {
+  curl "$@" | jid
+}
+
+pong() {
+  ping -c 10 "$@"
+}
+
+# Probe a /24 for hosts
+scan24() {
+  nmap -sP ${1}/24
+}
+
+# Netjoin - Block until a network connection is obtained.
+# Originally from https://github.com/bamos/dotfiles/blob/master/.funcs
+nj() {
+  while true; do
+    ping -c 1 8.8.8.8 &> /dev/null && break
+    sleep 1
+  done
+}
+
+# Start an HTTP server from a directory
+httpserver() {
+  local port="${1:-8000}";
+  sleep 1 && open "http://localhost:${port}/" &
+  python -c $'import SimpleHTTPServer;\nmap = SimpleHTTPServer.SimpleHTTPRequestHandler.extensions_map;\nmap[""] = "text/plain";\nfor key, value in map.items():\n\tmap[key] = value + ";charset=UTF-8";\nSimpleHTTPServer.test();' "$port";
+}
+
+#-------------------------------------------
+# File (de-)compression
+#-------------------------------------------
+
+# Extra many types of compressed packages
+# Credit: http://nparikh.org/notes/zshrc.txt
+extract() {
+  if [ -f "$1" ]; then
+    case "$1" in
+      *.tar.bz2)  tar -jxvf "$1"                        ;;
+      *.tar.gz)   tar -zxvf "$1"                        ;;
+      *.bz2)      bunzip2 "$1"                          ;;
+      *.dmg)      hdiutil mount "$1"                    ;;
+      *.gz)       gunzip "$1"                           ;;
+      *.tar)      tar -xvf "$1"                         ;;
+      *.tbz2)     tar -jxvf "$1"                        ;;
+      *.tgz)      tar -zxvf "$1"                        ;;
+      *.zip)      unzip "$1"                            ;;
+      *.ZIP)      unzip "$1"                            ;;
+      *.pax)      cat "$1" | pax -r                     ;;
+      *.pax.Z)    uncompress "$1" --stdout | pax -r     ;;
+      *.Z)        uncompress "$1"                       ;;
+      *) echo "'$1' cannot be extracted/mounted via extract()" ;;
+    esac
+  else
+     echo "'$1' is not a valid file to extract"
+  fi
+}
+
+# Create a .tar.gz archive
+function targz() {
+  local tmpFile="${@%/}.tar";
+  tar -cvf "${tmpFile}" --exclude=".DS_Store" "${@}" || return 1;
+
+  size=$(
+    stat -f"%z" "${tmpFile}" 2> /dev/null; # macOS `stat`
+    stat -c"%s" "${tmpFile}" 2> /dev/null;  # GNU `stat`
+  );
+
+  local cmd="gzip";
+
+  echo "Compressing .tar ($((size / 1000)) kB) using \`${cmd}\`…";
+  "${cmd}" -v "${tmpFile}" || return 1;
+  [ -f "${tmpFile}" ] && rm "${tmpFile}";
+
+  zippedSize=$(
+    stat -f"%z" "${tmpFile}.gz" 2> /dev/null; # macOS `stat`
+    stat -c"%s" "${tmpFile}.gz" 2> /dev/null; # GNU `stat`
+  );
+
+  echo "${tmpFile}.gz ($((zippedSize / 1000)) kB) created successfully.";
+}
+
+#-------------------------------------------
+# Git
+#-------------------------------------------
+
+# git commit all
+function gca() {
+    git add . && git ci -m "$*"
+}
+
+# NEW.
+function gnew() {
+  gca "📦 NEW: $@"
+}
+
+# IMPROVE.
+function gimp() {
+  gca "👌 IMPROVE: $@"
+}
+
+# FIX.
+function gfix() {
+  gca "🐛 FIX: $@"
+}
+
+# RELEASE.
+function grlz() {
+  gca "🚀 RELEASE: $@"
+}
+
+# DOC.
+function gdoc() {
+  gcap "📖 DOC: $@"
+}
+
+# TEST.
+function gtst() {
+  gcap "✅ TEST: $@"
+}

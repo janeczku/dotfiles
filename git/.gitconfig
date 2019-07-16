@@ -1,0 +1,9 @@
+[user]
+    name = janeczku
+    email = jabruder@gmail.com
+
+[github]
+  user = janeczku
+
+[core]
+    excludesfile = ~/.gitignore-global
