@@ -113,6 +113,7 @@ POWERLEVEL9K_PROMPT_ON_NEWLINE=true
 
 #-------------------------------------------
 # Load zgenom
+# Run 'zgenom reset' after changing list of plugins
 #-------------------------------------------
 
 source ~/.zgenom/zgenom.zsh
