@@ -39,11 +39,12 @@ done
 mkdir -p ${HOME}/.config
 stow --ignore='\.gitkeep' --ignore='\.gitignore' --ignore='\.DS_Store' --target=${HOME}/.config dot.config && log_ok || log_err
 
-log_task "Generating SSH key pair"
-ssh-keygen -t ed25519 -C "jabruder@gmail.com" -q -N "" -f ${HOME}/.ssh/id_ed25519
+# log_task "Generating SSH key pair"
+# ssh-keygen -t ed25519 -C "jabruder@gmail.com" -q -N "" -f ${HOME}/.ssh/id_ed25519
 
 log_task "Adding SSH key to ssh-agent"
 ssh-add -K ${HOME}/.ssh/id_ed25519 && log_ok || log_err
+ssh-add -K ${HOME}/.ssh/id_rsa && log_ok || log_err
 
 # log_task "Setting default shell to: $(which zsh)"
 # chsh -s $(which zsh) && log_ok || log_err
