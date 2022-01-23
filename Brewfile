@@ -70,12 +70,9 @@ cask "virtualbox"
 cask "visual-studio-code"
 
 # Fonts
-cask "font-sourcecodepro-nerd-font"
-cask "font-sourcecodepro-nerd-font-mono"
-cask "font-firacode-nerd-font"
-cask "font-firacode-nerd-font-mono"
-cask "font-meslo-nerd-font-mono"
 cask "font-hack-nerd-font"
+cask "font-fira-mono-nerd-font"
+cask "font-sauce-code-pro-nerd-font"
 
 # MacOS apps store
 mas "Evernote", id: 406056744

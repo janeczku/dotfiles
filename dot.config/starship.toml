@@ -54,18 +54,14 @@ threshold = 100
 style = "bold green"
 
 [character]
-symbol = "➜"
 error_symbol = "✗"
-use_symbol_for_status = true
 
 [cmd_duration]
 min_time = 500
-prefix = "took "
 
 [directory]
 truncation_length = 6
 truncate_to_repo = true
-prefix = "in "
 style = "bold cyan"
 disabled = false
 
@@ -84,14 +80,11 @@ revert = "REVERTING"
 bisect = "BISECTING"
 am = "AM"
 am_or_rebase = "AM/REBASE"
-progress_divider = " of "
 style = "bold yellow"
 disabled = false
 
 [hostname]
 ssh_only = false
-prefix = "🤖"
-# suffix = "⟫"
 trim_at = "."
 disabled = false
 

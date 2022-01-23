@@ -103,20 +103,12 @@ POWERLEVEL9K_OS_ICON_FOREGROUND="blue"
 POWERLEVEL9K_TIME_FORMAT="%D{%H:%M \uE868  %d.%m.%y}"
 POWERLEVEL9K_PROMPT_ON_NEWLINE=true
 
-
-#-------------------------------------------
-# Configure Prompt
-#-------------------------------------------
-
-# export DEFAULT_USER=jan
-# PROMPT=$PROMPT'$(kube_ps1) '
-
 #-------------------------------------------
 # Load zgenom
 # Run 'zgenom reset' after changing list of plugins
 #-------------------------------------------
 
-source ~/.zgenom/zgenom.zsh
+source "${HOME}/.zgenom/zgenom.zsh"
 zgenom autoupdate
 if ! zgenom saved; then
   echo "zgenom init..."
@@ -136,6 +128,7 @@ if ! zgenom saved; then
   # Theme
   # zgen load romkatv/powerlevel10k powerlevel10k
   zgenom save
+fi
 
 #-------------------------------------------
 # Starship
@@ -147,15 +140,15 @@ eval "$(starship init zsh)"
 # Source
 #-------------------------------------------
 
-source ~/.zsh_functions
+source "${HOME}/.zsh_functions"
 
-if [ -f ~/.zsh_secrets ]; then
-  source ~/.zsh_secrets
+if [ -f ${HOME}//.zsh_secrets ]; then
+  source "${HOME}/.zsh_secrets"
 fi
 
 # Source AWS creds
-if [ -f ~/.aws/aws_variables ]; then
-  source ~/.aws/aws_variables
+if [ -f ${HOME}//.aws/aws_variables ]; then
+  source "${HOME}/.aws/aws_variables"
 fi
 
 #-------------------------------------------
@@ -170,11 +163,10 @@ alias update='mas upgrade; brew cleanup; brew upgrade; brew update; brew cask cl
 alias show_files='defaults write com.apple.finder AppleShowAllFiles -bool true && killall Finder'
 alias hide_files='defaults write com.apple.finder AppleShowAllFiles -bool false && killall Finder'
 # Copy/paste public key
-alias pubkey="more ~/.ssh/id_rsa.pub | pbcopy | printf '=> Public key copied to pasteboard.\n'"
+alias pubkey='more ~/.ssh/id_rsa.pub | pbcopy | printf "Public key copied to pasteboard.\n"'
 # Better directory listing
 alias l='ls -aF'
 alias ll='ls -ahlF'
-alias ls='ls --color=auto --group-directories-first'
 
 #-------------------------------------------
 # Paths
@@ -190,6 +182,6 @@ export PATH=$(brew --prefix)/sbin:$PATH
 # Keymap
 #-------------------------------------------
 
-bindkey -e
-#bindkey '^[[A' history-substring-search-up
-#bindkey '^[[B' history-substring-search-down
+# bindkey -e
+# bindkey '^[[A' history-substring-search-up
+# bindkey '^[[B' history-substring-search-down
