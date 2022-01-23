@@ -1,9 +1,14 @@
 [user]
     name = janeczku
-    email = jabruder@gmail.com
+	email = jan@rancher.com
 
 [github]
   user = janeczku
 
 [core]
     excludesfile = ~/.gitignore-global
+[filter "lfs"]
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process

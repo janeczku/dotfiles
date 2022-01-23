@@ -7,7 +7,8 @@
 # URLs of remote DMG files
 REMOTE_INSTALL_URLS=(
   # Docker for Mac CE 2.0.0.3
-  https://download.docker.com/mac/stable/31259/Docker.dmg
+  # https://desktop.docker.com/mac/main/arm64/Docker.dmg
+  https://desktop.docker.com/mac/main/amd64/Docker.dmg
 )
 
 # Directory containing DMG files for installation
@@ -67,7 +68,7 @@ else
     log_heading "Installing from local directory"
     for f in "${files[@]}"; do
       install_from_dmg $f
-    done/Volumes/Untitled/dotfiles/lib_utils.sh
+    done
   fi
 fi
 

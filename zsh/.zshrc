@@ -6,6 +6,7 @@
 HISTSIZE=10000
 SAVEHIST=5000
 HISTFILE=~/.zsh_history
+HISTORY_IGNORE='(bg|fg|clear|exit|h|history|l|l[als]|pwd)'
 
 setopt hist_expire_dups_first
 setopt hist_ignore_all_dups
@@ -32,24 +33,14 @@ setopt always_to_end
 setopt complete_in_word
 unsetopt flow_control
 unsetopt menu_complete
-# setopt complete_aliases
-zstyle ':completion:*:*:*:*:*' menu select
-zstyle ':completion:*' matcher-list 'm:{a-zA-Z-_}={A-Za-z_-}' 'r:|=*' 'l:|=* r:|=*'
-zstyle ':completion::complete:*' use-cache 1
-zstyle ':completion::complete:*' cache-path $ZSH_CACHE_DIR
-zstyle ':completion:*' list-colors ''
-zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;34=0=01'
-
-# Use emacs keymap
-
-
-# Bind up/down arrow to select history-substring-search result
-# bindkey '^[[A' history-substring-search-up
-# bindkey '^[[B' history-substring-search-down
 
 #-------------------------------------------
 # OMZ Options
 #-------------------------------------------
+
+ZSH_THEME=""
+
+ZSH_HIGHLIGHT_MAXLENGTH=60
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -58,17 +49,16 @@ zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-
 # Case-sensitive completion must be off. _ and - will be interchangeable.
 # HYPHEN_INSENSITIVE="true"
 
-# Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
-
-# Uncomment the following line to automatically update without prompting.
-# DISABLE_UPDATE_PROMPT="true"
+# Uncomment one of the following lines to change the auto-update behavior
+# zstyle ':omz:update' mode disabled  # disable automatic updates
+# zstyle ':omz:update' mode auto      # update automatically without asking
+# zstyle ':omz:update' mode reminder  # just remind me to update when it's time
 
 # Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
+# zstyle ':omz:update' frequency 13
 
 # Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS=true
+# DISABLE_MAGIC_FUNCTIONS="true"
 
 # Uncomment the following line to disable colors in ls.
 # DISABLE_LS_COLORS="true"
@@ -76,16 +66,27 @@ zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-
 # Uncomment the following line to disable auto-setting terminal title.
 # DISABLE_AUTO_TITLE="true"
 
+# Uncomment the following line to enable command auto-correction.
+# ENABLE_CORRECTION="true"
+
 # Uncomment the following line to display red dots whilst waiting for completion.
+# You can also set it to another string to have that shown instead of the default red dots.
+# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
+# Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
 # COMPLETION_WAITING_DOTS="true"
 
-#-------------------------------------------
-# Terminal
-#-------------------------------------------
+# Uncomment the following line if you want to disable marking untracked files
+# under VCS as dirty. This makes repository status check for large repositories
+# much, much faster.
+# DISABLE_UNTRACKED_FILES_DIRTY="true"
 
-# Keep term colors in sync across Linux and MacOS
-#export LSCOLORS='Gxfxcxdxbxegedabagacad'
-#export LS_COLORS='di=1;36:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;43'
+# Uncomment the following line if you want to change the command execution time
+# stamp shown in the history command output.
+# You can set one of the optional three formats:
+# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
+# or set a custom format using the strftime function format specifications,
+# see 'man strftime' for details.
+# HIST_STAMPS="mm/dd/yyyy"
 
 #-------------------------------------------
 # Powerlevel9k Theme Settings
@@ -102,75 +103,92 @@ POWERLEVEL9K_OS_ICON_FOREGROUND="blue"
 POWERLEVEL9K_TIME_FORMAT="%D{%H:%M \uE868  %d.%m.%y}"
 POWERLEVEL9K_PROMPT_ON_NEWLINE=true
 
-#-------------------------------------------
-# Spaceship Theme Settings
-#-------------------------------------------
-
-# Prompt order
-SPACESHIP_PROMPT_ORDER=(
-    time          # Time stampts section
-    user          # Username section
-    dir           # Current directory section
-    host          # Hostname section
-    git           # Git section (git_branch + git_status)
-    golang        # Go section
-    docker        # Docker section
-    kubecontext   # Kubectl context section
-    terraform     # Terraform workspace section
-    exec_time     # Execution time
-    line_sep      # Line break
-    battery       # Battery level and status
-    vi_mode       # Vi-mode indicator
-    jobs          # Background jobs indicator
-    exit_code     # Exit code section
-    char          # Prompt character
-)
-
-#SPACESHIP_PROMPT_SEPARATE_LINE=false
-# SPACESHIP_PROMPT_ADD_NEWLINE=false
-# SPACESHIP_CHAR_SYMBOL="❯"
-# SPACESHIP_CHAR_SUFFIX=" "
-
-SPACESHIP_GOLANG_SYMBOL="·"
-SPACESHIP_DOCKER_SYMBOL="·"
-SPACESHIP_KUBECONTEXT_SYMBOL="ﴱ·"
-
-#-------------------------------------------
-# Plugin Settings
-#-------------------------------------------
 
 #-------------------------------------------
 # Configure Prompt
 #-------------------------------------------
 
-# export DEFAULT_USER=janek
+# export DEFAULT_USER=jan
 # PROMPT=$PROMPT'$(kube_ps1) '
 
 #-------------------------------------------
-# Load zgen
+# Load zgenom
 #-------------------------------------------
 
-source ~/.zgen-setup
+source ~/.zgenom/zgenom.zsh
+zgenom autoupdate
+if ! zgenom saved; then
+  echo "zgenom init..."
+  zgenom ohmyzsh
+  zgenom ohmyzsh plugins/git
+  zgenom ohmyzsh plugins/docker
+  zgenom ohmyzsh plugins/common-aliases
+  zgenom ohmyzsh plugins/golang
+  zgenom ohmyzsh plugins/kubectl
+  zgenom ohmyzsh plugins/kubectx
+  zgenom ohmyzsh plugins/macos
+  zgenom ohmyzsh plugins/tmux
+  zgenom load zsh-users/zsh-autosuggestions
+  # zgenom load zsh-users/zsh-completions
+  zgenom load zsh-users/zsh-history-substring-search
+  zgenom load zsh-users/zsh-syntax-highlighting
+  # Theme
+  # zgen load romkatv/powerlevel10k powerlevel10k
+  zgenom save
 
 #-------------------------------------------
-# Source additional files
+# Starship
 #-------------------------------------------
 
-source ~/.zsh_aliases
+eval "$(starship init zsh)"
+
+#-------------------------------------------
+# Source
+#-------------------------------------------
+
 source ~/.zsh_functions
 
-#-------------------------------------------
-# Various
-#-------------------------------------------
-
-if [ "$TERM" = "screen" -a ! "$SHOWED_SCREEN_MESSAGE" = "true" ]; then
-  detached_screens=$(screen -list | grep Detached)
-  if [ ! -z "$detached_screens" ]; then
-    echo "+---------------------------------------+"
-    echo "| Detached screens are available:       |"
-    echo "  $detached_screens"
-    echo "+---------------------------------------+"
-  fi
+if [ -f ~/.zsh_secrets ]; then
+  source ~/.zsh_secrets
 fi
 
+# Source AWS creds
+if [ -f ~/.aws/aws_variables ]; then
+  source ~/.aws/aws_variables
+fi
+
+#-------------------------------------------
+# Aliases
+#-------------------------------------------
+
+# IP lookup
+alias publicip="dig +short myip.opendns.com @resolver1.opendns.com"
+alias ip="ipconfig getifaddr en0"
+# System
+alias update='mas upgrade; brew cleanup; brew upgrade; brew update; brew cask cleanup; brew cu -a -y'
+alias show_files='defaults write com.apple.finder AppleShowAllFiles -bool true && killall Finder'
+alias hide_files='defaults write com.apple.finder AppleShowAllFiles -bool false && killall Finder'
+# Copy/paste public key
+alias pubkey="more ~/.ssh/id_rsa.pub | pbcopy | printf '=> Public key copied to pasteboard.\n'"
+# Better directory listing
+alias l='ls -aF'
+alias ll='ls -ahlF'
+alias ls='ls --color=auto --group-directories-first'
+
+#-------------------------------------------
+# Paths
+#-------------------------------------------
+
+export PATH=$PATH:/usr/local/go/bin
+export GOPATH=$HOME/go
+export PATH=$GOPATH/bin:$PATH
+export PATH=$(brew --prefix)/bin:$PATH
+export PATH=$(brew --prefix)/sbin:$PATH
+
+#-------------------------------------------
+# Keymap
+#-------------------------------------------
+
 bindkey -e
+#bindkey '^[[A' history-substring-search-up
+#bindkey '^[[B' history-substring-search-down

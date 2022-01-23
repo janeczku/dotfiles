@@ -1,6 +1,7 @@
 *.DS_Store
 # exclude private dotfiles
-dotfiles/secretfiles/*
-dotfiles/ssh/.ssh/*
+secrets/*
+ssh/.ssh/*
+pkgs/*
 
 !.gitkeep
