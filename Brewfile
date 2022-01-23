@@ -19,6 +19,7 @@ brew "wget"
 brew "xz"
 brew "starship"
 brew "tmux"
+brew "lulu"
 
 # Dev
 brew "asciinema"
