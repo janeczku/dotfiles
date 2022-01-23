@@ -23,8 +23,3 @@ $ ./install-software.sh
 $ ./install-dotfiles.sh
 ```  
 
-4. Customize MacOS default settings:
-
-```
-$ ./setup-macos-defaults.sh 
-```  
